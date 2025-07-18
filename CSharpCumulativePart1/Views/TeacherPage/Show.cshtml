@@ -1,0 +1,23 @@
+﻿@model CSharpCumulativePart1.Models.TeacherWithCoursesViewModel
+
+<h2>Teacher Details</h2>
+<p><strong>First Name:</strong> @Model.Teacher.FirstName</p>
+<p><strong>Last Name:</strong> @Model.Teacher.LastName</p>
+<p><strong>Hire Date:</strong> @Model.Teacher.HireDate.ToShortDateString()</p>
+<p><strong>Salary:</strong> $@Model.Teacher.Salary</p>
+
+<h3>Courses Taught</h3>
+
+@if (Model.Courses.Count == 0)
+{
+    <p>No courses assigned.</p>
+}
+else
+{
+    <ul>
+        @foreach (var course in Model.Courses)
+        {
+            <li>@course.Title (@course.Credits credits)</li>
+        }
+    </ul>
+}
