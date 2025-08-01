@@ -1,0 +1,18 @@
+﻿@model CSharpCumulativePart1.Models.Teacher
+
+<h2>Add New Teacher</h2>
+
+<form method="post">
+    <p><label>First Name:</label> <input name="FirstName" /></p>
+    <p><label>Last Name:</label> <input name="LastName" /></p>
+    <p><label>Hire Date:</label> <input type="date" name="HireDate" /></p>
+    <p><label>Employee Number:</label> <input name="EmployeeNumber" /></p>
+    <p><label>Salary:</label> <input type="number" name="Salary" step="0.01" /></p>
+    <p><label>Work Phone:</label> <input name="TeacherWorkPhone" /></p>
+    <button type="submit">Add Teacher</button>
+</form>
+
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
