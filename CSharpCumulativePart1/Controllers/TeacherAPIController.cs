@@ -13,7 +13,7 @@ namespace CSharpCumulativePart2.Controllers
 
         public TeacherAPIController(SchoolDbContext db) => _db = db;
 
-        /// <summary>Get one teacher by id. Returns 200 or 404.</summary>
+        /// <summary>Get one teacher by id. Returns 200 or 404</summary>
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(Teacher), 200)]
         [ProducesResponseType(404)]
@@ -23,7 +23,7 @@ namespace CSharpCumulativePart2.Controllers
             return t is null ? NotFound(new { message = $"Teacher {id} not found" }) : Ok(t);
         }
 
-        /// <summary>Update a teacher. Path id must match body.TeacherId. Returns 200, 400, or 404.</summary>
+        /// <summary>Update a teacher. Path id must match body.TeacherId. Returns 200, 400, or 404</summary>
         [HttpPut("{id:int}")]
         [ProducesResponseType(typeof(Teacher), 200)]
         [ProducesResponseType(typeof(object), 400)]
