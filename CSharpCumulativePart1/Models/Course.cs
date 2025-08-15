@@ -1,12 +1,10 @@
-﻿namespace CSharpCumulativePart1.Models
+﻿namespace CSharpCumulativePart2.Models
 {
     public class Course
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
+        public int CourseId { get; set; }
+        public string Title { get; set; } = string.Empty;
         public int Credits { get; set; }
-
-        // Foreign key for Teacher
-        public int TeacherId { get; set; }
+        public int? TeacherId { get; set; }
     }
 }

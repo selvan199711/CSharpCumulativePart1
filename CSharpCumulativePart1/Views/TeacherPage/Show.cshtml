@@ -1,4 +1,4 @@
-﻿@model CSharpCumulativePart1.Models.TeacherWithCoursesViewModel
+﻿@model CSharpCumulativePart2.Models.TeacherWithCoursesViewModel
 
 <h2>Teacher Details</h2>
 <p><strong>First Name:</strong> @Model.Teacher.FirstName</p>
@@ -17,7 +17,7 @@ else
     <ul>
         @foreach (var course in Model.Courses)
         {
-            <li>@course.Title (@course.Credits credits)</li>
+            <li>@course.CourseId (@course.Credits)</li>
         }
     </ul>
 }

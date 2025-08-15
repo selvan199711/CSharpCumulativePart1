@@ -1,90 +1,61 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using CSharpCumulativePart1.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
+using CSharpCumulativePart2.Models;
 
-namespace CSharpCumulativePart1.Controllers
+namespace CSharpCumulativePart2.Controllers
 {
-    /// <summary>
-    /// This controller handles requests for teacher data through the API.
-    /// It lets you fetch all teachers or just one based on their ID.
-    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class TeacherAPIController : ControllerBase
     {
-        private readonly SchoolDbContext _context;
+        private readonly SchoolDbContext _db;
 
-        /// <summary>
-        /// Sets up access to the database so this controller can pull teacher info.
-        /// </summary>
-        /// <param name="context">Used to connect to the School database.</param>
-        public TeacherAPIController(SchoolDbContext context)
+        public TeacherAPIController(SchoolDbContext db) => _db = db;
+
+        /// <summary>Get one teacher by id. Returns 200 or 404.</summary>
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(typeof(Teacher), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetOne(int id)
         {
-            _context = context;
+            var t = await _db.FindTeacherAsync(id);
+            return t is null ? NotFound(new { message = $"Teacher {id} not found" }) : Ok(t);
         }
 
-        /// <summary>
-        /// Gets a list of every teacher in the system.
-        /// </summary>
-        /// <returns>A list of all teachers with their details (status 200 OK).</returns>
-        [HttpGet]
-        public IActionResult GetAllTeachers()
+        /// <summary>Update a teacher. Path id must match body.TeacherId. Returns 200, 400, or 404.</summary>
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(typeof(Teacher), 200)]
+        [ProducesResponseType(typeof(object), 400)]
+        [ProducesResponseType(typeof(object), 404)]
+        public async Task<IActionResult> Update(int id, [FromBody] Teacher payload)
         {
-            var teachers = _context.Teachers.ToList();
-            return Ok(teachers);
+            if (payload is null) return BadRequest(new { message = "Body is required." });
+            if (id != payload.TeacherId) return BadRequest(new { message = "Path id and body TeacherId must match." });
+
+            var errors = ValidateTeacherForUpdate(payload);
+            if (errors != null) return BadRequest(errors);
+
+            var existing = await _db.FindTeacherAsync(id);
+            if (existing is null) return NotFound(new { message = $"Teacher {id} does not exist." });
+
+            var rows = await _db.UpdateTeacherAsync(payload);
+            if (rows == 0) return NotFound(new { message = $"Teacher {id} not found (no rows updated)." });
+
+            var updated = await _db.FindTeacherAsync(id);
+            return Ok(updated);
         }
 
-        /// <summary>
-        /// Looks up a teacher using their ID number.
-        /// </summary>
-        /// <param name="id">The teacher’s ID to search for.</param>
-        /// <returns>The teacher’s info if found (200 OK), or a 404 error if not.</returns>
-        [HttpGet("{id}")]
-        public IActionResult GetTeacherById(int id)
+        private static object? ValidateTeacherForUpdate(Teacher t)
         {
-            var teacher = _context.Teachers.Find(id);
-            if (teacher == null)
-                return NotFound("Teacher not found.");
-            return Ok(teacher);
+            var errs = new System.Collections.Generic.Dictionary<string, string>();
+
+            if (string.IsNullOrWhiteSpace(t.FirstName)) errs["firstName"] = "First name cannot be empty.";
+            if (string.IsNullOrWhiteSpace(t.LastName)) errs["lastName"] = "Last name cannot be empty.";
+            if (t.Salary < 0) errs["salary"] = "Salary must be 0 or greater.";
+            if (t.HireDate.Date > DateTime.Today) errs["hireDate"] = "Hire date cannot be in the future.";
+
+            return errs.Count > 0 ? new { errors = errs } : null;
         }
-
-
-        /// Adds a new teacher using POST.
-        [HttpPost]
-        public IActionResult AddTeacher([FromBody] Teacher newTeacher)
-        {
-            if (string.IsNullOrWhiteSpace(newTeacher.FirstName) || string.IsNullOrWhiteSpace(newTeacher.LastName))
-            {
-                return BadRequest("First and Last Name are required.");
-            }
-
-            if (newTeacher.HireDate > DateTime.Now)
-                return BadRequest("Hire Date can't be in the future.");
-
-            if (!System.Text.RegularExpressions.Regex.IsMatch(newTeacher.EmployeeNumber ?? "", @"^T\d+$"))
-                return BadRequest("Employee Number must start with 'T' followed by digits.");
-
-            if (_context.Teachers.Any(t => t.EmployeeNumber == newTeacher.EmployeeNumber))
-                return BadRequest("Employee Number already exists.");
-
-            _context.Teachers.Add(newTeacher);
-            _context.SaveChanges();
-            return Ok("Teacher added.");
-        }
-
-        /// Deletes a teacher by their ID.
-        [HttpDelete("{id}")]
-        public IActionResult DeleteTeacher(int id)
-        {
-            var teacher = _context.Teachers.Find(id);
-            if (teacher == null)
-                return NotFound("Teacher not found.");
-
-            _context.Teachers.Remove(teacher);
-            _context.SaveChanges();
-            return Ok("Teacher deleted.");
-        }
-
-
     }
 }

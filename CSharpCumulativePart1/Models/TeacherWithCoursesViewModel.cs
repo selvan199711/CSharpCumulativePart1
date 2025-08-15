@@ -1,4 +1,4 @@
-﻿namespace CSharpCumulativePart1.Models
+﻿namespace CSharpCumulativePart2.Models
 {
     public class TeacherWithCoursesViewModel
     {

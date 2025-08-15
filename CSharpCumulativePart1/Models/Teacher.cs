@@ -1,42 +1,35 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace CSharpCumulativePart1.Models
+namespace CSharpCumulativePart2.Models
 {
-    /// <summary>
-    /// Represents a teacher in the school.
-    /// </summary>
+    /// <summary>One teacher row from the Teachers table.</summary>
     public class Teacher
     {
-        /// <summary>
-        /// The unique identifier for the teacher.
-        /// </summary>
-        public int Id { get; set; }
+        /// <summary>DB primary key.</summary>
+        public int TeacherId { get; set; }
 
-        /// <summary>
-        /// The first name of the teacher.
-        /// </summary>
-        public string FirstName { get; set; }
+        /// <summary>Given name.</summary>
+        [Required(ErrorMessage = "First name is required.")]
+        public string FirstName { get; set; } = string.Empty;
 
-        /// <summary>
-        /// The last name of the teacher.
-        /// </summary>
-        public string LastName { get; set; }
+        /// <summary>Family name.</summary>
+        [Required(ErrorMessage = "Last name is required.")]
+        public string LastName { get; set; } = string.Empty;
 
-        /// <summary>
-        /// The date the teacher was hired.
-        /// </summary>
+        /// <summary>Staff/employee number (e.g., EMP123).</summary>
+        [Required(ErrorMessage = "Employee number is required.")]
+        public string EmployeeNumber { get; set; } = string.Empty;
+
+        /// <summary>Date hired.</summary>
+        [DataType(DataType.Date)]
         public DateTime HireDate { get; set; }
 
-        /// <summary>
-        /// The employee number assigned to the teacher.
-        /// </summary>
-        public string EmployeeNumber { get; set; }
-
-        /// <summary>
-        /// The salary of the teacher.
-        /// </summary>
+        /// <summary>Annual salary (>= 0).</summary>
+        [Range(0, double.MaxValue, ErrorMessage = "Salary must be 0 or greater.")]
         public decimal Salary { get; set; }
-    }
 
+        /// <summary>Optional work phone.</summary>
+        public string? WorkPhone { get; set; }
+    }
 }

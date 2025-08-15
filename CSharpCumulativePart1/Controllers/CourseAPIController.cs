@@ -1,20 +1,17 @@
-﻿using CSharpCumulativePart1.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using CSharpCumulativePart2.Models;
 
-[ApiController]
-[Route("api/[controller]")]
-public class CourseAPIController : ControllerBase
+namespace CSharpCumulativePart2.Controllers
 {
-    private readonly SchoolDbContext _context;
-
-    public CourseAPIController(SchoolDbContext context)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CourseAPIController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly SchoolDbContext _db;
+        public CourseAPIController(SchoolDbContext db) => _db = db;
 
-    [HttpGet]
-    public IActionResult GetAllCourses()
-    {
-        return Ok(_context.Courses.ToList());
+        [HttpGet]
+        public async Task<IActionResult> Get() => Ok(await _db.ListCoursesAsync());
     }
 }

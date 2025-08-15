@@ -1,10 +1,10 @@
-﻿@model CSharpCumulativePart1.Models.Teacher
+﻿@model CSharpCumulativePart2.Models.Teacher
 
 <h2>Confirm Deletion</h2>
 <p>Are you sure you want to delete @Model.FirstName @Model.LastName?</p>
 
 <form action="/TeacherPage/Delete" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
+    <input type="hidden" name="id" value="@Model.TeacherId" />
     <button type="submit">Yes, Delete</button>
 </form>
 
