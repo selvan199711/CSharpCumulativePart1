@@ -1,6 +1,6 @@
 # C# Cumulative Part 3 — Teachers (Update)
 
-Small ASP.NET Core app that updates teachers in a MySQL DB. No Entity Framework — plain MySQL ADO.NET.
+Small ASP.NET Core app that updates teachers in a MySQL DB. MySQL ADO.NET.
 
 ## What’s here
 - **API:** `PUT /api/TeacherAPI/{id}` (and `GET /api/TeacherAPI/{id}` for the edit page)
